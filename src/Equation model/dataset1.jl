@@ -89,6 +89,13 @@ function make_coeff(coeff_type::Int, var_list::Vector{Num}=@variables y z; rand_
 end
 
 """
+Swap LHS and RHS of an equation
+"""
+function swap_lhs_rhs(eq::Equation)
+    return eq.rhs ~ eq.lhs
+end
+
+"""
 Linear equation generator using make_coeff system
 
 Types:
@@ -110,7 +117,11 @@ function linear_eq(nu::Int, type::Int=1, coeff_types::Vector{Int}=Int[1, 1, 1, 1
         a = make_coeff(a_type, var_list)
         b = make_coeff(b_type, var_list)
         c = make_coeff(c_type, var_list)
-        return a * x + b ~ c
+        if (rand(Bool))
+            return a * x + b ~ c
+        else
+            c ~ a * x + b
+        end
     end
 
     # Helper function to create two-sided equation: a₁x + b₁ = a₂x + b₂
@@ -168,26 +179,6 @@ function linear_eq(nu::Int, type::Int=1, coeff_types::Vector{Int}=Int[1, 1, 1, 1
 
     return eqs
 end
-
-# Dict(x => 2)
-
-# using JSON
-# function save_dataset(dataset, path)
-#     modified_data = Dict{String,Any}()
-#     # modified_data = Vector{Vector{Any}}()
-#     for ex in dataset
-#         tree = traverse_expr(ex, returnTreeForPlot=true)
-
-#         merge!(modified_data, Dict(string(ex) => tree))
-#         # push!(modified_data, [string(ex), tree])
-#     end
-
-#     open(path, "w") do io
-#         JSON.print(io, modified_data)
-#     end
-# end
-
-# save_dataset(linear_eq(50, 1), "D:/Study/Intelligence And Learning/Reinforcement Learning/Project 1/deployment/src/linear_numeric1.json")
 
 # Usage examples:
 # eqs1 = linear_eq(50, 1)  # ax + b = c (all numeric)

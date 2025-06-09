@@ -8,13 +8,13 @@
 @register_symbolic ∂(expr)  # differential opearator
 
 # Define ∫ and ∂ for special cases
-# function ∫(::Number, dx)
-#     return ∫(1, dx)
-# end
+function ∫(::Number, dx)
+    return ∫(1, dx)
+end
 
-# function ∂(a::Number)
-#     return 0
-# end
+function ∂(a::Number)
+    return 0
+end
 
 """
 A tool from which model can take any action (func) over (node) of an (expression tree)
@@ -45,24 +45,6 @@ end
 #     print("yesy")
 # end
 # typeof(operation(e1))
-
-function how_to_make_func()
-    function f(a; b=2, c=4)
-        println("a=$a, b=$b c=$c")
-    end
-
-    function f(a; b=2, c=4, d=3)
-        println("a=$a, b=$b c=$c d=$d")
-    end
-
-    function f(a, d=3; b=2, c=4)
-        println("a=$a, b=$b c=$c d=$d")
-    end
-
-    f(10, b=12, c=2)
-    f(10, b=12, d=2)
-    f(10, 2, b=12, c=12)
-end
 
 function big_thoughts()
     """
