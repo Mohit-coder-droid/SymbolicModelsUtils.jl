@@ -49,6 +49,21 @@ function linear_transport(expr::Equation, side::Int=1, node::Int=1)
     lhs[1](lhs[2]...) ~ rhs[1](rhs[2]...)
 end
 
+"""
+Checks whether a linear equation is in it's termination state or not
+
+Termination state for linear equation is defined as: x ~ const
+"""
+function linear_termination_status(expr::Equation)
+    if isequal(expr.lhs, x) & !any(v -> isequal(v, x), Symbolics.get_variables(expr.rhs))
+        return true
+    elseif isequal(expr.rhs, x) & !any(v -> isequal(v, x), Symbolics.get_variables(expr.lhs))
+        return true
+    else
+        false
+    end
+end
+
 # que12 = 
 
 # There is something wrong with linear_transport it doesn't able to handle 3 or more arguments in an operation
