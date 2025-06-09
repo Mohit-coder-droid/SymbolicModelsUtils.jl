@@ -2,13 +2,6 @@
 # using GraphMakie
 # using Graphs
 
-"""To print all the elements of any iteration"""
-function show_full(iter::Any)
-    for e in iter
-        println(e)
-    end
-end
-
 
 """For traversing symbolic expressions, by depth-first search"""
 # function traverse_expr(expr, parent=-1, current=-1; returnTree::Bool=false, tree=nothing, printTree::Bool=false)

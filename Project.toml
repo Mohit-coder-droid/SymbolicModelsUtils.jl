@@ -3,7 +3,15 @@ uuid = "3a560103-8d51-4b59-9d08-76030a41fafa"
 authors = ["Mohit Sahu"]
 version = "1.0.0-DEV"
 
+[deps]
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SymbolicUtils = "d1185830-fcd6-423d-90d6-eec64667417b"
+Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
+
 [compat]
+Random = "1.11.0"
+SymbolicUtils = "3.29.0"
+Symbolics = "6.40.0"
 julia = "1.6.7"
 
 [extras]

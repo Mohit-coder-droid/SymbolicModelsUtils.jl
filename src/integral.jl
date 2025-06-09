@@ -1,7 +1,3 @@
-using Symbolics
-using SymbolicUtils
-using SymbolicUtils: Rewriters, Prewalk, PassThrough
-
 # Try to make the integration function ∫ symbolic, so that by part rule can be applied on it
 # And it can also call the model inside that function
 
@@ -12,13 +8,13 @@ using SymbolicUtils: Rewriters, Prewalk, PassThrough
 @register_symbolic ∂(expr)  # differential opearator
 
 # Define ∫ and ∂ for special cases
-function ∫(::Number, dx)
-    return ∫(1, dx)
-end
+# function ∫(::Number, dx)
+#     return ∫(1, dx)
+# end
 
-function ∂(a::Number)
-    return 0
-end
+# function ∂(a::Number)
+#     return 0
+# end
 
 """
 A tool from which model can take any action (func) over (node) of an (expression tree)
@@ -171,6 +167,13 @@ function traverse_expr(expr::Equation; returnTreeForPlot::Bool=false)
     sort!(lhs, by=x -> x[2])
 
     return lhs
+end
+
+"""To print all the elements of any iteration"""
+function show_full(iter::Any)
+    for e in iter
+        println(e)
+    end
 end
 
 

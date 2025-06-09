@@ -1,10 +1,4 @@
-include("../integral.jl")
-include("../visualizer.jl")
-include("../Symbolics_func.jl")
-include("../Our_rules.jl")
-include("dataset1.jl")
 
-@variables x y z t;
 
 # yup = linear_eq(10, 4)
 # que = yup[1]

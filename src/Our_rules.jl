@@ -648,39 +648,3 @@ function check_rules(ex, rules)
 
     applicable
 end
-
-function trash()
-    # ex = sin(2x)
-    # trigs_rules = [@rule tanh(~x) => sinh(~x) / cosh(~x)
-    # @rule sech(~x) => one(~x) / cosh(~x)
-    # @rule csch(~x) => one(~x) / sinh(~x)
-    # @rule coth(~x) => cosh(~x) / sinh(~x)
-    # @acrule exp(~x) * exp(~y) => exp(~x + ~y)]
-
-    # applicable = []
-    # for r in trigs_rules
-    #     push!(applicable, r(ex))
-    # end
-
-    # applied_results = [(r, r(ex)) for r in trigs_rules if r(ex) !== nothing]
-
-    # applicable = trigs_rules.(ex)
-
-    # xmx = @rule tanh(~x) => sinh(~x) / cosh(~x)
-    # trigs_rules.(sin(2x))
-    # trigs_rules[5](sin(2x))
-end
-    
-# mn = check_rules(sin(2x), trigs_rules)
-# @btime check_rules(sin(2x+x), trigs_rules)  # see how time is increasing in this as more rules are getting applied 
-
-# simplify can perform basic operations
-# ex = (cot(x)-tan(x))/(1+cos(4x))
-# simplify(ex, expand=true)
-
-# simplify(cos(x)/sin(x) + sin(x)/cos(x), expand=true)
-
-# @syms x
-# ex = (cot(x)-tan(x)+8x)/(1+cos(4x))
-
-# op

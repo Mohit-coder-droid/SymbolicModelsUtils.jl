@@ -3,11 +3,8 @@
 # I want to have a fix vector (embedding) for an unknown irrespective of its symbol
 
 
-
 using Random
 # rng = Xoshiro(123);
-using BenchmarkTools
-
 # rand(rng, Int8)
 
 # var = @variables x y z
