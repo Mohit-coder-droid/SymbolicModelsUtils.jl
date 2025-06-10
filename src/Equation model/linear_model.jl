@@ -15,6 +15,10 @@ function linear_tree(expr)
 end
 
 function linear_transport(expr_tree, side::Int=1, node::Int=1)
+    if length(expr_tree[side][2]) < node
+        return expr_tree  # return the tree without affecting when actions are not applicable 
+    end
+
     other_side = expr_tree[3-side][1](expr_tree[3-side][2]...)
     if (expr_tree[side][1] == +)
         other_side = other_side + -1 * expr_tree[side][2][node] # adding to any of the node will bring the same result
@@ -67,7 +71,6 @@ end
 # que12 = 
 
 # There is something wrong with linear_transport it doesn't able to handle 3 or more arguments in an operation
-# xmx = linear_transport(deepcopy(yup[4]), 2, 1)
 # linear_transport(deepcopy(xmx), 1, 3)
 # tre = linear_transport(tre, 1, 1)
 # linear_transport(tre, 1, 2)

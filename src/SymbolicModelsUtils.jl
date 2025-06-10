@@ -16,7 +16,7 @@ export make_coeff, linear_eq, fractional_linear_eq, quadratic_eq, power_eq, func
 
 # For Linear Model
 include("Equation model/linear_model.jl")
-export linear_transport
+export linear_transport, linear_termination_status
 
 
 # Check whether this module is working as expected or not
