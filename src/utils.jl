@@ -15,3 +15,7 @@ function Base.denominator(x::SymbolicUtils.BasicSymbolic{Real})
     end
     return x
 end
+
+function string_to_expression(ex)
+    return eval(Meta.parse(ex))
+end

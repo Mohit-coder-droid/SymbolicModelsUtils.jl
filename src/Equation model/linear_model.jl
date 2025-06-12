@@ -18,7 +18,6 @@ function linear_transport(expr_tree, side::Int=1, node::Int=1)
     if length(expr_tree[side][2]) < node
         return expr_tree  # return the tree without affecting when actions are not applicable 
     end
-
     other_side = expr_tree[3-side][1](expr_tree[3-side][2]...)
     if (expr_tree[side][1] == +)
         other_side = other_side + -1 * expr_tree[side][2][node] # adding to any of the node will bring the same result

@@ -6,7 +6,8 @@ using SymbolicUtils: Rewriters, Prewalk, PassThrough
 include("integral.jl")
 export traverse_expr, show_full, ∫, ∂
 
-include("Symbolics_func.jl")
+include("utils.jl")
+export string_to_expression
 
 include("Our_rules.jl")
 export @birule, apply_∂, take_common
