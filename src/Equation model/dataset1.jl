@@ -4,8 +4,8 @@
 
 
 using Random
-# rng = Xoshiro(123);
-# rand(rng, Int8)
+# rng = Xoshiro(seed);
+rand(Xoshiro(123), Int8)
 
 # var = @variables x y z
 # eq = 3x + 2 // 5 ~ 23 - 1 / 5
@@ -16,12 +16,12 @@ using Random
 """
 Linear equation of form ax+b=c
 """
-function linear_eq1(nu::Int)
+function linear_eq1(nu::Int, seed=nothing)
     eqs = Vector{Symbolics.Equation}(undef, nu)
     for i in 1:nu
-        a = rand(vcat(Int8(-128):-1, Int8(1):Int8(127)))  # avoid 0
-        b = rand(Int8)
-        c = rand(Int8)
+        a = rand(Xoshiro(seed), vcat(Int8(-128):-1, Int8(1):Int8(127)))  # avoid 0
+        b = rand(Xoshiro(seed), Int8)
+        c = rand(Xoshiro(seed), Int8)
         eqs[i] = a * x + b ~ c
     end
 
@@ -70,15 +70,15 @@ Types of coefficient:
 4: Fraction 
 5: zero 
 """
-function make_coeff(coeff_type::Int, var_list::Vector{Num}=@variables y z; rand_nu_range::Vector{Int64}=vcat(-128:-1, 1:127))
-    rand_without_0() = rand(rand_nu_range)
+function make_coeff(coeff_type::Int, var_list::Vector{Num}=@variables y z; rand_nu_range::Vector{Int64}=vcat(-128:-1, 1:127), seed=nothing)
+    rand_without_0() = rand(Xoshiro(seed), rand_nu_range)
 
     if coeff_type == 1
         return rand_without_0()
     elseif coeff_type == 2
-        return rand_without_0() * rand(var_list)
+        return rand_without_0() * rand(Xoshiro(seed), var_list)
     elseif coeff_type == 3
-        return (rand_without_0() // rand_without_0()) * rand(var_list)
+        return (rand_without_0() // rand_without_0()) * rand(Xoshiro(seed), var_list)
     elseif coeff_type == 4
         return (rand_without_0() // rand_without_0())
     elseif coeff_type == 5
@@ -106,7 +106,7 @@ Types:
 5: Mixed numeric/symbolic constants, random equation form (ax+b=c or a₁x+b₁=a₂x+b₂)
 6: Custom coefficient types - specify [a₁, b₁, a₂, b₂] for a₁x+b₁=a₂x+b₂
 """
-function linear_eq(nu::Int, type::Int=1, coeff_types::Vector{Int}=Int[1, 1, 1, 1], var_list::Vector{Num}=@variables y z; mix::Bool=false)
+function linear_eq(nu::Int, type::Int=1, coeff_types::Vector{Int}=Int[1, 1, 1, 1], var_list::Vector{Num}=@variables y z; mix::Bool=false, seed=nothing)
     if mix
         type = 6
     end
@@ -114,10 +114,10 @@ function linear_eq(nu::Int, type::Int=1, coeff_types::Vector{Int}=Int[1, 1, 1, 1
 
     # Helper function to create simple form equation: ax + b = c
     function create_simple_eq(a_type::Int, b_type::Int, c_type::Int)
-        a = make_coeff(a_type, var_list)
-        b = make_coeff(b_type, var_list)
-        c = make_coeff(c_type, var_list)
-        if (rand(Bool))
+        a = make_coeff(a_type, var_list, seed=seed)
+        b = make_coeff(b_type, var_list, seed=seed)
+        c = make_coeff(c_type, var_list, seed=seed)
+        if (rand(Xoshiro(seed), Bool))
             return a * x + b ~ c
         else
             c ~ a * x + b
@@ -126,10 +126,10 @@ function linear_eq(nu::Int, type::Int=1, coeff_types::Vector{Int}=Int[1, 1, 1, 1
 
     # Helper function to create two-sided equation: a₁x + b₁ = a₂x + b₂
     function create_twosided_eq(a1_type::Int, b1_type::Int, a2_type::Int, b2_type::Int)
-        a1 = make_coeff(a1_type, var_list)
-        b1 = make_coeff(b1_type, var_list)
-        a2 = make_coeff(a2_type, var_list)
-        b2 = make_coeff(b2_type, var_list)
+        a1 = make_coeff(a1_type, var_list, seed=seed)
+        b1 = make_coeff(b1_type, var_list, seed=seed)
+        a2 = make_coeff(a2_type, var_list, seed=seed)
+        b2 = make_coeff(b2_type, var_list, seed=seed)
         return a1 * x + b1 ~ a2 * x + b2
     end
 
@@ -147,24 +147,24 @@ function linear_eq(nu::Int, type::Int=1, coeff_types::Vector{Int}=Int[1, 1, 1, 1
             create_twosided_eq(1, 2, 1, 2)  # a₁,a₂=numeric, b₁,b₂=symbolic
 
         elseif type == 5
-            if rand(Bool)
+            if rand(Xoshiro(seed), Bool)
                 # Simple form with random coefficient types
                 a_type = 1  # coefficient of x must be non-zero
-                b_type = rand([1, 2, 4])
-                c_type = rand([1, 2, 4])
+                b_type = rand(Xoshiro(seed), [1, 2, 4])
+                c_type = rand(Xoshiro(seed), [1, 2, 4])
                 create_simple_eq(a_type, b_type, c_type)
             else
                 # Two-sided form with random coefficient types
                 a1_type = 1
                 a2_type = 1
-                b1_type = rand([1, 2, 4])
-                b2_type = rand([1, 2, 4])
+                b1_type = rand(Xoshiro(seed), [1, 2, 4])
+                b2_type = rand(Xoshiro(seed), [1, 2, 4])
                 create_twosided_eq(a1_type, b1_type, a2_type, b2_type)
             end
 
         elseif type == 6
             if mix
-                rand!(coeff_types, 1:5)
+                rand!(Xoshiro(seed), coeff_types, 1:5)
                 coeff_types[1] = rand(1:4)
             end
 
@@ -181,7 +181,8 @@ function linear_eq(nu::Int, type::Int=1, coeff_types::Vector{Int}=Int[1, 1, 1, 1
 end
 
 # Usage examples:
-# eqs1 = linear_eq(50, 1)  # ax + b = c (all numeric)
+# I think I have to generate all random numbers at once
+eqs1 = linear_eq(1, 1, seed=12)  # ax + b = c (all numeric)
 # eqs2 = linear_eq(50, 2)  # a₁x + b₁ = a₂x + b₂ (all numeric)
 # eqs3 = linear_eq(50, 3)  # ax + b = c (symbolic constants)
 # eqs4 = linear_eq(50, 4)  # a₁x + b₁ = a₂x + b₂ (symbolic constants)
@@ -199,26 +200,26 @@ Types:
 4: a₁x + b₁ = a₂x + b₂ (symbolic fraction)
 5: Mixed numeric/symbolic fraction, random equation form (ax+b=c or a₁x+b₁=a₂x+b₂)
 """
-function fractional_linear_eq(nu::Int, type::Int=1, var_list::Vector{Num}=@variables y z; mix::Bool=false)
+function fractional_linear_eq(nu::Int, type::Int=1, var_list::Vector{Num}=@variables y z; mix::Bool=false, seed=nothing)
     if mix
         type = 5
     end
     eqs = Vector{Symbolics.Equation}(undef, nu)
 
     # Helper function to generate random coefficient for x (avoiding 0)
-    rand_without_0() = rand(vcat(Int8(-128):-1, Int8(1):Int8(127)))
+    rand_without_0() = rand(Xoshiro(seed), vcat(Int8(-128):-1, Int8(1):Int8(127)))
 
     # Helper function to generate constant based on type
     function rand_constant(use_symbolic::Bool, can_zero::Bool=true)
         if use_symbolic
             if can_zero
-                return (rand(Int8) // rand_without_0()) * rand(var_list)
+                return (rand(Xoshiro(seed), Int8) // rand_without_0()) * rand(Xoshiro(seed), var_list)
             else
-                return (rand_without_0() // rand_without_0()) * rand(var_list)
+                return (rand_without_0() // rand_without_0()) * rand(Xoshiro(seed), var_list)
             end
         else
             if can_zero
-                return rand(Int8) // rand_without_0()
+                return rand(Xoshiro(seed), Int8) // rand_without_0()
             else
                 return (rand_without_0() // rand_without_0())
             end
@@ -287,7 +288,7 @@ Simplify any quadratic equations of the types given below to a(x-α)(x-β)=0
 Types:
 1: a₁x^2 + b₁x + c₁ ~ a₂x^2 + b₂x + c₂  where, constants can be fraction, symbolic, number 
 """
-function quadratic_eq(nu::Int, type::Vector{Int}=[1, 1, 1, 1, 1, 1]; mix::Bool=false)
+function quadratic_eq(nu::Int, type::Vector{Int}=[1, 1, 1, 1, 1, 1]; mix::Bool=false, seed=nothing)
     @assert length(type) == 6 "Length of type must be 6"
 
     eqs = Vector{Symbolics.Equation}(undef, nu)
@@ -295,14 +296,14 @@ function quadratic_eq(nu::Int, type::Vector{Int}=[1, 1, 1, 1, 1, 1]; mix::Bool=f
     for i in 1:nu
         if mix
             rand!(type, 1:5)
-            type[1] = rand(1:4)  # leading term can't be 0
+            type[1] = rand(Xoshiro(seed), 1:4)  # leading term can't be 0
         end
         eqs[i] = make_coeff(type[1]) * x^2 + make_coeff(type[2]) * x + make_coeff(type[3]) ~ make_coeff(type[4]) * x^2 + make_coeff(type[5]) * x + make_coeff(type[6])
     end
 
     return eqs
 end
-# quadratic_eq(10, [1, 2, 3, 5, 1, 4]; mix=true)
+quadratic_eq(10, [1, 2, 3, 5, 1, 4]; mix=true, seed=123)
 
 # Check for the domain error possiblity
 """
@@ -312,15 +313,15 @@ Types
 1: a*x^(b) + c = d
 2: a₁*x^(b₁) = a₂*x^(b₂)
 """
-function power_eq(nu::Int, type::Int=1, coeff_type::Vector{Int}=[1, 1, 1, 1]; mix::Bool=false)
+function power_eq(nu::Int, type::Int=1, coeff_type::Vector{Int}=[1, 1, 1, 1]; mix::Bool=false, seed=nothing)
     @assert length(coeff_type) == 4 "Length of coeff_type must be equal to 4"
     eqs = Vector{Symbolics.Equation}(undef, nu)
 
     for i in 1:nu
         if mix
             rand!(coeff_type, 1:5)
-            coeff_type[1] = rand(1:4)
-            type = rand(1:2)
+            coeff_type[1] = rand(Xoshiro(seed), 1:4)
+            type = rand(Xoshiro(seed), 1:2)
         end
 
         if type == 1
