@@ -313,10 +313,6 @@ end
 # eqs4 = fractional_linear_eq(50,4,seed=123)
 # eqs4 = fractional_linear_eq(50,5,seed=123)
 
-for i in 1:20
-    println(make_coeff([1, 1, 1, 1, 1, 1], can_zero=Bool.([0, 1, 1, 1, 1, 1]), seed=nothing))
-end
-
 """
 Simplify any quadratic equations of the types given below to a(x-α)(x-β)=0
 
@@ -337,14 +333,14 @@ function quadratic_eq(type::Vector{Int}=[1, 1, 1, 1, 1, 1], var_list=@variables 
     return a₁ * x^2 + b₁ * x + c₁ ~ a₂ * x^2 + b₂ * x + c₂
 end
 
-make_coeff([1, 1, 1, 1, 1, 1], seed=6, can_zero=Bool.([0, 1, 1, 1, 1, 1]))
+# make_coeff([1, 1, 1, 1, 1, 1], seed=6, can_zero=Bool.([0, 1, 1, 1, 1, 1]))
 
-nu = 50
-eqs = Vector{Symbolics.Equation}(undef, nu)
-for i in 1:nu
-    eqs[i] = quadratic_eq([1, 1, 1, 1, 1, 1], seed=nothing, mix=false)
-end
-eqs
+# nu = 50
+# eqs = Vector{Symbolics.Equation}(undef, nu)
+# for i in 1:nu
+#     eqs[i] = quadratic_eq([1, 1, 1, 1, 1, 1], seed=nothing, mix=false)
+# end
+# eqs
 
 """Generates multiple quadractic equations"""
 function quadratic_eq(nu::Int, type::Vector{Int}=[1, 1, 1, 1, 1, 1], var_list=@variables y z; mix::Bool=false, seed=nothing)
@@ -749,7 +745,7 @@ function change_variable(nu::Int=1; expr_func::Vector{Num})
     return eqs
 end
 
-change_variable(10; expr_func=expr_func)
+# change_variable(10; expr_func=expr_func)
 
 # One more type of dataset is left
 # Here, it's not just direct already learned transformations, but also application of some already pre-defined rules will be required to handle this task
