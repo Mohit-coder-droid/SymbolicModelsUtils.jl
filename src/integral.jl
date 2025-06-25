@@ -82,7 +82,7 @@ function big_thoughts()
 end
 
 # Recursive function to traverse the expression tree
-function traverse_expr(expr, tree=nothing; parent::Int=-1, current::Int=-1, returnTree::Bool=false, returnTreeForPlot::Bool=false, printTree::Bool=false)
+function traverse_expr(expr, tree; parent::Int=-1, current::Int=-1, returnTree::Bool=false, returnTreeForPlot::Bool=false, printTree::Bool=false)
     current += 1
     if SymbolicUtils.iscall(expr)
         arg, op = arguments(expr), operation(expr)

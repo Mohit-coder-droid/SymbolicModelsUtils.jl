@@ -371,7 +371,7 @@ Types
 1: a*x^(b) + c = d
 2: a₁*x^(b₁) = a₂*x^(b₂)
 """
-function power_eq(type::Int=1, coeff_type::Vector{Int}=[1, 1, 1, 1]; mix::Bool=false, seed=nothing)
+function power_eq(type::Int, coeff_type::Vector{Int}=[1, 1, 1, 1]; mix::Bool=false, seed=nothing)
     @assert length(coeff_type) == 4 "Length of coeff_type must be equal to 4"
 
     if mix
@@ -391,7 +391,7 @@ function power_eq(type::Int=1, coeff_type::Vector{Int}=[1, 1, 1, 1]; mix::Bool=f
     end
 end
 
-function power_eq(nu::Int, type::Int=1, coeff_type::Vector{Int}=[1, 1, 1, 1]; mix::Bool=false, seed=nothing)
+function power_eq(nu::Int, type::Int, coeff_type::Vector{Int}=[1, 1, 1, 1]; mix::Bool=false, seed=nothing)
     @assert length(coeff_type) == 4 "Length of coeff_type must be equal to 4"
     eqs = Vector{Symbolics.Equation}(undef, nu)
 
