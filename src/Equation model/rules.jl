@@ -32,16 +32,16 @@ trigs_rules = [@birule tan(~x) ~ sin(~x) / cos(~x)
 ]
 
 
-trigs_rules[5](sin(x)^2)
-trigs_rules[5](1 - (cos(x)^2))
+# trigs_rules[5](sin(x)^2)
+# trigs_rules[5](1 - (cos(x)^2))
 
-expr = 2 * cos(x)^2 - 1
-yup(expr)
-dump(expr)
-trigs_rules[9](cos(2x))
+# expr = 2 * cos(x)^2 - 1
+# yup(expr)
+# dump(expr)
+# trigs_rules[9](cos(2x))
 
-trigs_rules[end](cos(2x))
+# trigs_rules[end](cos(2x))
 
-# Check why the inverse of this is not working
-yup = @rule (1 + -1 * tan(~x)^2) / (1 + tan(~x)^2) => cos(2*~x)
-yup((1 - (tan(x)^2)) / (1 + tan(x)^2))
+# # Check why the inverse of this is not working
+# yup = @rule (1 + -1 * tan(~x)^2) / (1 + tan(~x)^2) => cos(2*~x)
+# yup((1 - (tan(x)^2)) / (1 + tan(x)^2))

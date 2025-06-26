@@ -1,3 +1,4 @@
 /Manifest*.toml
 src/visualizer.jl
 docs/build/
+docs/Manifest.toml

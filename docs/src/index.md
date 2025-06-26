@@ -3,13 +3,61 @@ CurrentModule = SymbolicModelsUtils
 ```
 
 # SymbolicModelsUtils.jl
+SymbolicModelsUtils.jl consists of various symbolics environments where a user or a model can perform \
+symbolic operations as maths agree. The sole purpose of this module is to provide an environment in which \
+users can try making an RL model learn. 
 
-Documentation for [SymbolicModelsUtils.jl](https://github.com/mohit-coder-droid/SymbolicModelsUtils.jl).
+## Installation
 
-Ok just this is the thing that I wanted to be in my docs here. 
+To install SymbolicModelsUtils.jl, use the Julia package manager:
 
-## First Heading
-This is the first heading
+```julia
+using Pkg
+Pkg.add("https://github.com/JuliaSymbolics/SymbolicUtils.jl.git")
+```
 
-## Second Heading
-This is the Second heading
+## Different Models
+
+- Equation Model: for solving linear, quadratic, functional equations
+- Integral Model: for solving integration problems
+  
+## Reproducibility
+
+```@raw html
+<details><summary>The documentation of this SciML package was built using these direct dependencies,</summary>
+```
+
+```@example
+using Pkg # hide
+Pkg.status() # hide
+```
+
+```@raw html
+</details>
+```
+
+```@raw html
+<details><summary>and using this machine and Julia version.</summary>
+```
+
+```@example
+using InteractiveUtils # hide
+versioninfo() # hide
+```
+
+```@raw html
+</details>
+```
+
+```@raw html
+<details><summary>A more complete overview of all dependencies and their versions is also provided.</summary>
+```
+
+```@example
+using Pkg # hide
+Pkg.status(; mode = PKGMODE_MANIFEST) # hide
+```
+
+```@raw html
+</details>
+```

@@ -248,7 +248,6 @@ heur_int_rules = [
 
 
 """Removes the constant from integration"""
-
 function const_out(expr)
     check_applicable = @rule ∫(~uv, ∂(~x)) => (~uv, ∂(~x))
 
