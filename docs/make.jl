@@ -28,7 +28,8 @@ makedocs(;
         "Equation Model" => Any[
             "equation/model.md",
             "equation/dataset.md",
-            "equation/examples.md"],
+            "equation/examples.md",
+            "equation/rules.md"],
         "Integral Model" => Any["integral/model.md",
             "integral/dataset.md",
             "integral/examples.md",

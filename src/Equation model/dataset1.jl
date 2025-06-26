@@ -1,73 +1,17 @@
-# Linear equation of form ax+b=c, a₁x+b₁ = a₂x + b₂
-# Here (a,b,c) can be fraction also 
-# I want to have a fix vector (embedding) for an unknown irrespective of its symbol
-
-
 using Random
-# rng = Xoshiro(seed);
-# rand(Xoshiro(123), Int8)
 
-# var = @variables x y z
-# eq = 3x + 2 // 5 ~ 23 - 1 / 5
-# eq = (3 // 2)x + 2 // 5 ~ 23 - 1 / 5
-# eq = Symbolics.value(eq)
-# operation(eq.lhs)
-
-"""
-Linear equation of form ax+b=c
-"""
-function linear_eq1(nu::Int, seed=nothing)
-    eqs = Vector{Symbolics.Equation}(undef, nu)
-    for i in 1:nu
-        a = rand(Xoshiro(seed), vcat(Int8(-128):-1, Int8(1):Int8(127)))  # avoid 0
-        b = rand(Xoshiro(seed), Int8)
-        c = rand(Xoshiro(seed), Int8)
-        eqs[i] = a * x + b ~ c
-    end
-
-    return eqs
-end
-
-# @btime linear_eq1  # 139.400 μs (2656 allocations: 194.58 KiB)
-
-"""
-Linear equation of form a₁x+b₁ = a₂x + b₂
-"""
-function linear_eq2(nu::Int)
-    eqs = Vector{Symbolics.Equation}(undef, nu)
-    for i in 1:nu
-        eqs[i] = rand(vcat(Int8(-128):-1, Int8(1):Int8(127))) * x + rand(Int8) ~ rand(vcat(Int8(-128):-1, Int8(1):Int8(127))) * x + rand(Int8)
-    end
-
-    return eqs
-end
-
-# @btime linear_eq2(50)   # 319.700 μs (5340 allocations: 389.91 KiB)
-
-"""
-Linear equation of form ax+b=c
-
-where b and c are symbolic variables 
-"""
-function linear_eq3(nu::Int, var_list::Vector{Num}=@variables y z)
-    eqs = Vector{Symbolics.Equation}(undef, nu)
-    for i in 1:nu
-        b = rand(Int8) * rand(var_list)
-        c = rand(Int8) * rand(var_list)
-        eqs[i] = rand(vcat(Int8(-128):-1, Int8(1):Int8(127))) * x + b ~ rand(vcat(Int8(-128):-1, Int8(1):Int8(127))) * x + c
-    end
-
-    return eqs
-end
-
-# linear_eq3(3)
 """
 Types of coefficient:
-1: Number (can't be 0)
-2: Symbolic with number coefficient
-3: Symbolic with fraction coefficient
-4: Fraction 
-5: zero 
+1. Number (can't be 0)
+2. Symbolic with number coefficient
+3. Symbolic with fraction coefficient
+4. Fraction 
+5. zero 
+
+Examples:
+```@repl 
+    make_coeff([1,2,3,4,5],seed=123)
+```
 """
 function make_coeff(coeff_type::Vector{Int}, var_list::Vector{Num}=collect(@variables y z); rand_nu_range::Vector{Int64}=vcat(-128:-1, 1:127), seed=nothing, can_zero::Union{Nothing,Vector{Bool},BitVector}=nothing)
     tot = 0
@@ -114,8 +58,6 @@ function make_coeff(coeff_type::Vector{Int}, var_list::Vector{Num}=collect(@vari
     return coeff
 end
 
-# make_coeff([4,3,3],seed=123)
-
 """
 Swap LHS and RHS of an equation
 """
@@ -126,13 +68,13 @@ end
 """
 Linear equation generator generates single equation
 
-Types:
-1: ax + b = c (numeric constants)
-2: a₁x + b₁ = a₂x + b₂ (numeric constants)  
-3: ax + b = c (symbolic constants)
-4: a₁x + b₁ = a₂x + b₂ (symbolic constants)
-5: Mixed numeric/symbolic constants, random equation form (ax+b=c or a₁x+b₁=a₂x+b₂)
-6: Custom coefficient types - specify [a₁, b₁, a₂, b₂] for a₁x+b₁=a₂x+b₂
+# Types:
+1. ax + b = c (numeric constants)
+2. a₁x + b₁ = a₂x + b₂ (numeric constants)  
+3. ax + b = c (symbolic constants)
+4. a₁x + b₁ = a₂x + b₂ (symbolic constants)
+5. Mixed numeric/symbolic constants, random equation form (ax+b=c or a₁x+b₁=a₂x+b₂)
+6. Custom coefficient types - specify [a₁, b₁, a₂, b₂] for a₁x+b₁=a₂x+b₂
 """
 function linear_eq(type::Int, coeff_types::Vector{Int}=Int[1, 1, 1, 1], var_list::Vector{Num}=@variables y z; mix::Bool=false, seed=nothing)
     if mix
@@ -237,12 +179,12 @@ end
 """
 Fractional Linear equation generator
 
-Types:
-1: ax + b = c (numeric fraction)
-2: a₁x + b₁ = a₂x + b₂ (numeric fraction)
-3: ax + b = c (symbolic fraction)
-4: a₁x + b₁ = a₂x + b₂ (symbolic fraction)
-5: Mixed numeric/symbolic fraction, random equation form (ax+b=c or a₁x+b₁=a₂x+b₂)
+# Types
+1. ax + b = c (numeric fraction)
+2. a₁x + b₁ = a₂x + b₂ (numeric fraction)
+3. ax + b = c (symbolic fraction)
+4. a₁x + b₁ = a₂x + b₂ (symbolic fraction)
+5. Mixed numeric/symbolic fraction, random equation form (ax+b=c or a₁x+b₁=a₂x+b₂)
 """
 function fractional_linear_eq(type::Int, var_list::Vector{Num}=@variables y z; seed=nothing)
     # Helper function to create simple form equation: ax + b = c
@@ -289,7 +231,6 @@ function fractional_linear_eq(type::Int, var_list::Vector{Num}=@variables y z; s
     return eqs
 end
 
-"""Generates multiple fractional linear equations"""
 function fractional_linear_eq(nu::Int, type::Int, var_list::Vector{Num}=@variables y z; seed=nothing)
     eqs = Vector{Symbolics.Equation}(undef, nu)
 
@@ -314,10 +255,21 @@ end
 # eqs4 = fractional_linear_eq(50,5,seed=123)
 
 """
-Simplify any quadratic equations of the types given below to a(x-α)(x-β)=0
+Generates random quadratic equations of the form `a₁x^2 + b₁x + c₁ ~ a₂x^2 + b₂x + c₂`  where, constants can be number, fraction, symbolic
 
-Types:
-1: a₁x^2 + b₁x + c₁ ~ a₂x^2 + b₂x + c₂  where, constants can be fraction, symbolic, number 
+    quadratic_eq(nu::Int, type::Vector{Int}=[1, 1, 1, 1, 1, 1], var_list=@variables y z; mix::Bool=false, seed=nothing)
+
+# Arguments
+- `nu::Int`: number of equations
+- `type::Vector{Int}`: determines whether coefficients in the equations are number, fraction, or symbolic on the basis of `make_coeff()`
+- `var_list`: variables to be used as a symbolic constants 
+- `mix::Bool`: makes `type` random 
+- `seed` 
+
+# Examples
+```@example
+quadratic_eq(type=[1,2,3,4,4,5], seed=123)
+```
 """
 function quadratic_eq(type::Vector{Int}=[1, 1, 1, 1, 1, 1], var_list=@variables y z; mix::Bool=false, seed=nothing)
     @assert length(type) == 6 "Length of type must be 6"
@@ -342,7 +294,6 @@ end
 # end
 # eqs
 
-"""Generates multiple quadractic equations"""
 function quadratic_eq(nu::Int, type::Vector{Int}=[1, 1, 1, 1, 1, 1], var_list=@variables y z; mix::Bool=false, seed=nothing)
     @assert length(type) == 6 "Length of type must be 6"
 
@@ -365,11 +316,11 @@ end
 
 # Check for the domain error possiblity
 """
-Simplify any power equations and makes equal x = something ^ (something else)
+Generates equations involving powers
 
-Types
-1: a*x^(b) + c = d
-2: a₁*x^(b₁) = a₂*x^(b₂)
+# Types
+1. a*x^(b) + c = d
+2. a₁*x^(b₁) = a₂*x^(b₂)
 """
 function power_eq(type::Int, coeff_type::Vector{Int}=[1, 1, 1, 1]; mix::Bool=false, seed=nothing)
     @assert length(coeff_type) == 4 "Length of coeff_type must be equal to 4"
@@ -419,9 +370,9 @@ func_list = [sin, cos, sec, csc, tan, cot, log, exp, sqrt, sinh, cosh, sech, csc
 
 # In this equations check for domain errors
 """
-1: Direct inverse: f(x) = const 
-2: Composition of two func: (g ∘ f)(x) = const 
-3: Composition of three func: (h ∘ g ∘ f)(x) = const
+1. Direct inverse: f(x) = const 
+2. Composition of two func: (g ∘ f)(x) = const 
+3. Composition of three func: (h ∘ g ∘ f)(x) = const
 """
 function functional_eq(depth::Int, coeff_type::Int=1; mix::Bool=false, seed=nothing)
     if mix

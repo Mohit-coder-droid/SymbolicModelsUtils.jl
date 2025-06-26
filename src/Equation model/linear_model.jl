@@ -39,8 +39,21 @@ function linear_transport(expr_tree, side::Int=1, node::Int=1)
     end
 end
 
+"""
+    linear_transport(expr::Equation, side::Int=1, node::Int=1)
+
+Transport a term from one side to another in a linear equation
+
+# Arguments
+- `expr`: Equation
+- `side::Int`: 1 for LHS and 2 for RHS 
+- `node::Int`: 1 for first term and 2 for second term 
+
+# Returns 
+It return a new expression tree, in which the term is transferred to the other side
+"""
 function linear_transport(expr::Equation, side::Int=1, node::Int=1)
-    tree = [linear_tree(expr.lhs), linear_tree(expr.rhs)]
+    tree = deepcopy([linear_tree(expr.lhs), linear_tree(expr.rhs)])
     if side == 1
         lhs, rhs = linear_transport(tree, side, node)
     elseif side == 2
@@ -53,6 +66,8 @@ function linear_transport(expr::Equation, side::Int=1, node::Int=1)
 end
 
 """
+    linear_termination_status(expr::Equation)
+    
 Checks whether a linear equation is in it's termination state or not
 
 Termination state for linear equation is defined as: x ~ const

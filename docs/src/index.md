@@ -20,6 +20,9 @@ Pkg.add("https://github.com/JuliaSymbolics/SymbolicUtils.jl.git")
 
 - Equation Model: for solving linear, quadratic, functional equations
 - Integral Model: for solving integration problems
+
+## Things to know
+In all the models we by default consider that the missing variable is `x`. 
   
 ## Reproducibility
 
