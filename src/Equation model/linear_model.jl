@@ -1,5 +1,3 @@
-
-
 # yup = linear_eq(10, 4)
 # que = yup[1]
 
@@ -22,14 +20,20 @@ function linear_transport(expr_tree, side::Int=1, node::Int=1)
     if (expr_tree[side][1] == +)
         other_side = other_side + -1 * expr_tree[side][2][node] # adding to any of the node will bring the same result
         expr_tree[side][2][node] += -1 * expr_tree[side][2][node]
-    elseif expr_tree[side][1] == *
-        other_side /= expr_tree[side][2][node]
-        expr_tree[side][2][node] /= expr_tree[side][2][node]
-    elseif expr_tree[side][1] == /
-        other_side *= expr_tree[side][2][node]
-        expr_tree[side][2][node] *= expr_tree[side][2][node]
     else
-        error("Equation should be linear")
+        if (!isequal(expr_tree[side][2][node], x))
+            if expr_tree[side][1] == *
+                other_side /= expr_tree[side][2][node]
+                expr_tree[side][2][node] /= expr_tree[side][2][node]
+            elseif expr_tree[side][1] == /
+                other_side *= expr_tree[side][2][node]
+                expr_tree[side][2][node] *= expr_tree[side][2][node]
+            else
+                error("Equation should be linear")
+            end
+        else
+            return expr_tree
+        end
     end
 
     if side == 1
@@ -85,7 +89,11 @@ end
 # que12 = 
 
 # There is something wrong with linear_transport it doesn't able to handle 3 or more arguments in an operation
-# linear_transport(deepcopy(xmx), 1, 3)
+# xmx = 0 ~ 1 + -2 / x
+# linear_transport(deepcopy(xmx), 2, 2)   # 2 / x ~ 1 + 2 / x + -2 / x  => because julia is not using it's brain that it can be simplified very easily
+# xmx = linear_transport(deepcopy(xmx), 2, 1)
+# xmx = linear_transport(deepcopy(xmx), 2, 2)
+# xmx = linear_transport(deepcopy(xmx), 2, 1)
 # tre = linear_transport(tre, 1, 1)
 # linear_transport(tre, 1, 2)
 # tre = linear_transport(tre, 2, 1)

@@ -38,6 +38,10 @@ power_eq
 ```
 
 ## Functional Dataset
+By functional equations, we mean that it is combinations of some functions such that it is symbolically solvable. Now, if we take any random functions then it will be solvable only if we take composition of them without violating their respective domains. For that we can use
+
 ```@docs
 functional_eq
 ```
+
+But instead of choosing random functions, if we restrict ourself to one domain, like trignometric or exponential, then we can apply some simplification rule to reach a point where we can just take inverse and the problem will be solved. 
