@@ -136,9 +136,13 @@ To traverse equations
 
 Made basically to be used for dataset
 """
-function traverse_expr(expr::Equation; returnTreeForPlot::Bool=false)
+function traverse_expr(expr::Equation; returnTreeForPlot::Bool=true)
     lhs = traverse_expr(expr.lhs, returnTree=true, returnTreeForPlot=returnTreeForPlot)
     rhs = traverse_expr(expr.rhs, returnTree=true, returnTreeForPlot=returnTreeForPlot)
+
+
+    # If this is false returnTreeForPlot, the below line gives error, handle this later 
+
 
     lhs = Vector{Tuple{Int64,Int64,String}}([(a + 1, b + 1, string(c)) for (a, b, c) in lhs])
     rhs = Vector{Tuple{Int64,Int64,String}}([(a + 1 + length(lhs), b + 1 + length(lhs), string(c)) for (a, b, c) in rhs])

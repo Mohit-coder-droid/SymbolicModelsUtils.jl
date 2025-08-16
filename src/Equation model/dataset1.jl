@@ -25,6 +25,7 @@ function make_coeff(coeff_type::Vector{Int}, var_list::Vector{Num}=collect(@vari
     if isnothing(can_zero)
         can_zero = falses(length(coeff_type))
     end
+
     rand_zero = rand(rng, sum(can_zero))
     tot_zero = 1
     tot = 1
@@ -103,23 +104,40 @@ function linear_eq(type::Int, coeff_types::Vector{Int}=Int[1, 1, 1, 1], var_list
     elseif type == 2
         return create_twosided_eq([1, 1, 1, 1], seed=seed)  # all numeric
 
+
+
+
+    # make the coefficient of the leading term also symbolic, and ensure that it doesn't get 0 
+
+
+
+
+
     elseif type == 3
-        return create_simple_eq([1, 2, 2], seed=seed)  # a=numeric, b,c=symbolic
+        if rand(Xoshiro(seed), Bool)
+            return create_simple_eq([1, 2, 2], seed=seed)  # a=numeric, b,c=symbolic
+        else
+            return create_simple_eq([2, 2, 2], seed=seed)  # a=symbolic, b,c=symbolic
+        end
 
     elseif type == 4
-        return create_twosided_eq([1, 2, 1, 2], seed=seed)  # a₁,a₂=numeric, b₁,b₂=symbolic
+        if rand(Xoshiro(seed), Bool)
+            return create_twosided_eq([1, 2, 1, 2], seed=seed)  # a₁,a₂=numeric, b₁,b₂=symbolic
+        else
+            return create_twosided_eq([1, 2, 2, 2], seed=seed)
+        end
 
     elseif type == 5
         if rand(Xoshiro(seed), Bool)
             # Simple form with random coefficient types
-            a_type = 1  # coefficient of x must be non-zero
+            a_type = rand(Xoshiro(seed), [1, 2])  # coefficient of x must be non-zero
             b_type = rand(Xoshiro(seed), [1, 2, 4])
             c_type = rand(Xoshiro(seed), [1, 2, 4])
             return create_simple_eq([a_type, b_type, c_type], seed=seed)
         else
             # Two-sided form with random coefficient types
-            a1_type = 1
-            a2_type = 1
+            a1_type = rand(Xoshiro(seed), [1, 2])
+            a2_type = rand(Xoshiro(seed), [1, 2])
             b1_type = rand(Xoshiro(seed), [1, 2, 4])
             b2_type = rand(Xoshiro(seed), [1, 2, 4])
             return create_twosided_eq([a1_type, b1_type, a2_type, b2_type], seed=seed)
@@ -253,6 +271,9 @@ end
 # eqs3 = fractional_linear_eq(50,3,seed=123)
 # eqs4 = fractional_linear_eq(50,4,seed=123)
 # eqs4 = fractional_linear_eq(50,5,seed=123)
+
+
+# Why not we can apply direct quadratic formula to solve this quadratic equation (In symbolic calculations, we don't care about the sign inside the square root, until we aren't sure about the range of our variables) 
 
 """
 Generates random quadratic equations of the form `a₁x^2 + b₁x + c₁ ~ a₂x^2 + b₂x + c₂`  where, constants can be number, fraction, symbolic

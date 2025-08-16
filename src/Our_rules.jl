@@ -501,12 +501,24 @@ end
 """
 To take common out of an expression
 """
-function take_common(expr, common)
-    if typeof(operation(expr))!=typeof(+) return nothing end 
+function take_common(expr, common, strict::Bool=true)
+    if strict   # I don't know where I am using this nothing, in strict mode. Check it once
+        if !iscall(expr) return nothing end
+        if typeof(operation(expr))!=typeof(+) return nothing end 
+    else
+        if !iscall(expr) return expr end
+        if typeof(operation(expr))!=typeof(+) return expr end 
+    end
 
     u = Vector{Any}()
 
     for arg in arguments(expr)
+        if !strict  # Check whether every term contains x or not
+            if !occursin(common, arg)
+                return expr 
+            end
+        end
+
         push!(u, arg / common)
     end
 
