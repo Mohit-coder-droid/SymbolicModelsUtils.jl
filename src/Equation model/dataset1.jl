@@ -1,5 +1,7 @@
 using Random
 
+@variables x y z a b c d e f g h i j
+
 """
 Types of coefficient:
 1. Number (can't be 0)
@@ -157,6 +159,8 @@ function linear_eq(type::Int, coeff_types::Vector{Int}=Int[1, 1, 1, 1], var_list
         error("Invalid type. Must be 1, 2, 3, 4, 5, 6, or 6.")
     end
 end
+
+linear_general = a * x + b ~ c * x + d
 
 # it may happen that the function is calling itself again and again
 # eqs1 = linear_eq(1, seed=12)  # ax + b = c (all numeric)
@@ -684,7 +688,6 @@ end
 # extract_expression(20, 6)
 
 # Valid just for trignometric substituions
-@variables x
 subsi_func = [sin(x), cos(x), tan(x), cot(x), sec(x), csc(x), sin(2x), cos(2x), tan(2x)]
 expr_func = [sin(x), cos(x), tan(x), cot(x), sec(x), csc(x), sin(2x), cos(2x), tan(2x), sin(3x), cos(3x), tan(3x)]
 # make_coeff(2, rand_nu_range=vcat(-10:-1, 1:10))

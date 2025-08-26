@@ -162,6 +162,32 @@ function show_full(iter::Any)
     end
 end
 
+"""
+    To get all the symbolic terms in an expression
+"""
+function traverse_expr_get_all_terms(expr, tree_terms)
+    if !iscall(expr)
+        if (typeof(expr) == SymbolicUtils.BasicSymbolic{Real})
+            # print(typeof(expr))
+            # means it's a symbolic term 
+            push!(tree_terms, expr)
+        end
+    else
+        arg = arguments(expr)
+        for a in arg
+            traverse_expr_get_all_terms(a, tree_terms)
+        end
+    end
+end
+
+function traverse_expr_get_all_terms(expr)
+    tree_terms = Vector{SymbolicUtils.BasicSymbolic{Real}}()
+    traverse_expr_get_all_terms(expr, tree_terms)
+
+    return tree_terms
+end
+
+# ab = traverse_expr_get_all_terms(coeffs[2, 1])
 
 # expr = Symbolics.value((cos(x)-tan(x))~sin(x)+cot(x))
 # tree = traverse_expr(expr, returnTreeForPlot=true)
