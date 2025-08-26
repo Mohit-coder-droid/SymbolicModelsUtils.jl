@@ -3,10 +3,6 @@ using Symbolics
 using SymbolicUtils
 using SymbolicUtils: Rewriters, Prewalk, PassThrough
 
-# Fixing the automatic conversion Matrix{Num} to Float32 conversion bug 
-using PyCall
-PyCall.pytype_mapping(Num, PyObject)
-
 include("integral.jl")
 export traverse_expr, show_full, ∫, ∂
 
