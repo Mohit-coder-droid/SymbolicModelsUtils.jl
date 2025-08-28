@@ -255,6 +255,7 @@ function linear_system_action(;
 end
 
 function linear_system_transport(eqs::linear_system, action::linear_system_action)
+    eqs = deepcopy(eqs)
     function modify_eq(eq, term_, op)
         if op in [+, -]
             return op(eq.lhs, term_) ~ op(eq.rhs, term_)
@@ -305,7 +306,9 @@ function linear_system_transport(eqs::linear_system, action::linear_system_actio
         elseif action.action == 3
             eqs.eqs[action.eq_nu] = modify_eq(eqs.eqs[action.eq_nu], eqs.coeffs[action.term_loc...], *)
         elseif action.action == 4
-            eqs.eqs[action.eq_nu] = modify_eq(eqs.eqs[action.eq_nu], eqs.coeffs[action.term_loc...], /)
+            if !isequal(eqs.real_coeffs[action.term_loc...], 0)
+                eqs.eqs[action.eq_nu] = modify_eq(eqs.eqs[action.eq_nu], eqs.coeffs[action.term_loc...], /)
+            end
         end
     end
 
@@ -340,12 +343,37 @@ end
 
 # linear_system_termination(eqs6)
 
+# for i in 1:3, j in 1:4
+# name = Symbol("a_$(i)_$(j)")
+#     eval(:(@variables $name))
+#     end
+# @variables x_1 x_2 x_3
+
+# eq = (a_2_1 + a_3_1 + a_1_1 * (-a_2_3 - a_3_3)) * x_1 + (a_2_2 + a_3_2 - a_1_2 * (a_2_3 + a_3_3)) * x_2 + (a_2_3 + a_3_3 + a_1_3 * (-a_2_3 - a_3_3)) * x_3 ~ a_2_4 + a_3_4 + a_1_4 * (-a_2_3 - a_3_3) + (-a_2_1 - a_3_1) * (a_2_2 + a_3_2) + a_1_2 * (a_2_1 + a_3_1) * (a_2_3 + a_3_3) + (a_2_2 + a_3_2 - a_1_2 * (a_2_3 + a_3_3)) * (a_2_1 + a_3_1) + (-1 + a_1_3) * (a_2_3 + a_3_3) * a_3_1 + (a_2_3 + a_3_3 + a_1_3 * (-a_2_3 - a_3_3)) * a_3_1
+
+# tree = traverse_expr(eq)  # length>100, then how is this coming up 
+# maybe this is the problem of env_checker not of my environment, as I had implmeneted that length check logic in the model not the environment
+
+# make everything 0
+# eqs = linear_system(3, 3)
+# linear_system_transport(eqs, linear_system_action(do_combine=true, combine_type=2, action=3, term_loc=(1, 1), eq_nu=2, eq1=3, eq2=3))
+# linear_system_transport(eqs, linear_system_action(do_combine=true, combine_type=2, action=3, term_loc=(1, 1), eq_nu=2, eq1=1, eq2=1))
+# eqs_ = linear_system_transport(eqs, linear_system_action(do_combine=true, combine_type=2, action=3, term_loc=(1, 1), eq_nu=2, eq1=2, eq2=2))
+
+# eqs = linear_system_transport(eqs, linear_system_action(do_single=true, combine_type=2, action=4, term_loc=(3, 3), eq_nu=3, eq1=2, eq2=1))
+# eqs = linear_system_transport(eqs, linear_system_action(do_single=true, combine_type=2, action=4, term_loc=(3, 1), eq_nu=3, eq1=2, eq2=1))
+# eqs = linear_system_transport(eqs, linear_system_action(do_combine=true, combine_type=1, action=4, term_loc=(3, 1), eq_nu=3, eq1=3, eq2=1))
+# show_real_linear_system(linear_system_transport(eqs, linear_system_action(do_combine=true, combine_type=1, action=4, term_loc=(3, 1), eq_nu=3, eq1=3, eq2=1)))
+
 function solution()
     # 1. The whole linear equation can be solved using a simple strategy that to remove a variable, first divide it by it's own coefficients, and then multiply it by the coefficient from the variable which has to be removed. And then subtract those two eq
     # Strategy for solving linear eq 
-    # 463.835 ms (9285003 allocations: 509.01 MiB)
+    #   455.163 ms (10242105 allocations: 584.19 MiB)
+
+    # After applying deepcopy
+    # 460.219 ms (10779373 allocations: 589.45 MiB)
     begin
-        # @btime begin
+        @btime begin
         eqs = linear_system(3, 3)
         eqs = linear_system_transport(eqs, linear_system_action(do_single=true, combine_type=2, action=4, term_loc=(2, 3), eq_nu=2, eq1=2, eq2=1))
         eqs = linear_system_transport(eqs, linear_system_action(do_single=true, combine_type=2, action=3, term_loc=(1, 3), eq_nu=2, eq1=2, eq2=1))
@@ -376,7 +404,7 @@ function solution()
         # get the soln back 
         eqs = linear_system_transport(eqs, linear_system_action(do_single=true, combine_type=2, action=4, term_loc=(3, 1), eq_nu=3, eq1=1, eq2=3))
         eqs = linear_system_transport(eqs, linear_system_action(do_single=true, combine_type=2, action=4, term_loc=(1, 2), eq_nu=1, eq1=3, eq2=1))
-        eqs4 = linear_system(eqs3)
+        # eqs4 = linear_system(eqs3)
 
         # Get the last variable 
         eqs = linear_system_transport(eqs, linear_system_action(do_single=true, combine_type=2, action=3, term_loc=(2, 2), eq_nu=1, eq1=3, eq2=1))
@@ -397,6 +425,8 @@ function solution()
     # lhs, rhs = linear_system(eqs)
 end
 
+# [1 1 1 1 1 0 0 1 3 0]  => this action makes the terms 0
+trr = traverse_expr(0 ~ 0, returnTreeForPlot=true)
 
 # yup = [Symbolics.coeff(eqs.eqs[3].lhs, vars[i]) for i in 1:length(vars)]
 
