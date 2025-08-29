@@ -349,7 +349,7 @@ end
 #     end
 # @variables x_1 x_2 x_3
 
-# eq = (a_2_1 + a_3_1 + a_1_1 * (-a_2_3 - a_3_3)) * x_1 + (a_2_2 + a_3_2 - a_1_2 * (a_2_3 + a_3_3)) * x_2 + (a_2_3 + a_3_3 + a_1_3 * (-a_2_3 - a_3_3)) * x_3 ~ a_2_4 + a_3_4 + a_1_4 * (-a_2_3 - a_3_3) + (-a_2_1 - a_3_1) * (a_2_2 + a_3_2) + a_1_2 * (a_2_1 + a_3_1) * (a_2_3 + a_3_3) + (a_2_2 + a_3_2 - a_1_2 * (a_2_3 + a_3_3)) * (a_2_1 + a_3_1) + (-1 + a_1_3) * (a_2_3 + a_3_3) * a_3_1 + (a_2_3 + a_3_3 + a_1_3 * (-a_2_3 - a_3_3)) * a_3_1
+# eq = (-a_3_1 - 3(a_2_1 + (a_1_1 + a_2_1)*a_2_2)*a_3_3)*x_1 + (-a_3_2 + 3(-a_2_2 - a_1_2*a_2_2 - (a_2_2^2))*a_3_3)*x_2 + (-a_3_3 + 3(-a_2_3 - a_1_3*a_2_2 - a_2_2*a_2_3)*a_3_3)*x_3 ~ -a_3_4 - 3(a_2_4 - a_1_1*a_2_1 + (a_1_4 + a_2_4)*a_2_2 - a_2_3*a_3_1 - (a_1_1^2)*a_2_2 + a_1_1*(a_2_1 + a_1_1*a_2_2) + (2a_2_3 + 2a_1_3*a_2_2 + a_2_2*a_2_3)*a_3_1 + (-a_2_3 - a_1_3*a_2_2)*a_3_1 - a_1_3*a_2_2*a_3_1 - a_2_2*a_2_3*a_3_1)*a_3_3 + 2(a_3_1 + (a_2_1 + (a_1_1 + a_2_1)*a_2_2)*a_3_3)*(-a_2_3 - a_1_3*a_2_2 - a_2_2*a_2_3)*a_3_3 + 2(-a_3_1 - (a_2_1 + (a_1_1 + a_2_1)*a_2_2)*a_3_3)*(-a_2_3 - a_1_3*a_2_2 - a_2_2*a_2_3)*a_3_3
 
 # tree = traverse_expr(eq)  # length>100, then how is this coming up 
 # maybe this is the problem of env_checker not of my environment, as I had implmeneted that length check logic in the model not the environment
@@ -373,7 +373,7 @@ function solution()
     # After applying deepcopy
     # 460.219 ms (10779373 allocations: 589.45 MiB)
     begin
-        @btime begin
+        # @btime begin
         eqs = linear_system(3, 3)
         eqs = linear_system_transport(eqs, linear_system_action(do_single=true, combine_type=2, action=4, term_loc=(2, 3), eq_nu=2, eq1=2, eq2=1))
         eqs = linear_system_transport(eqs, linear_system_action(do_single=true, combine_type=2, action=3, term_loc=(1, 3), eq_nu=2, eq1=2, eq2=1))
@@ -426,7 +426,7 @@ function solution()
 end
 
 # [1 1 1 1 1 0 0 1 3 0]  => this action makes the terms 0
-trr = traverse_expr(0 ~ 0, returnTreeForPlot=true)
+# trr = traverse_expr(0 ~ 0, returnTreeForPlot=true)
 
 # yup = [Symbolics.coeff(eqs.eqs[3].lhs, vars[i]) for i in 1:length(vars)]
 
